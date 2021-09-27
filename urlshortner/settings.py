@@ -9,11 +9,13 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+import dj_database_url
+import django_heroku
 import os
 from pathlib import Path
 
-import django_heroku
-import dj_database_url
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,6 +36,7 @@ ALLOWED_HOSTS = ['*']  #allowing all the hosts
 # Application definition
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,6 +47,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    #'whitenoise.middleware.WhitenoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -73,21 +77,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'urlshortner.wsgi.application'
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompresseManifestStaticFilesStorage'
+STATIC_ROOT =os.path.join(BASE_DIR,'static')
+STATICFILES_DIRS = [os.path.join(BASE_DIR ,'urlshortner/static')]
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-#DATABASES ={
-    #'default': {
-   #     'ENGINE' : 'django.db.backends.sqlite3',
-  #      'NAME' : BASE_DIR / 'db.sqlite3',
- #   }
+MEDIA_ROOT = os.path.join(BASE_DIR ,'media')
+MEDIA_URL = '/media/'
 
-#}
 
-#DATABASES = {
- #   'default': dj_database_url.config()
-#}
+DATABASES = {
+    'default' :{
+        'ENGINE':'django.db.backends.postgresql',
+        'NAME' : 'urlshortner',
+        'USER' : 'postgres',
+        'PASSWORD': 'abcd1234@...',
+        'HOST' : 'localhost',
+        'PORT' : '5432',
+
+    }
+}
+
+db_from_env = dj_database_url.config(conn_max_age = 600)
+DATABASES['default'].update(db_from_env)
 
 
 # Password validation
