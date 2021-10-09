@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import dj_database_url
 import django_heroku
 import os
+import psycopg2
 from pathlib import Path
 
 
@@ -77,13 +78,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'urlshortner.wsgi.application'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompresseManifestStaticFilesStorage'
-STATIC_ROOT =os.path.join(BASE_DIR,'static')
-STATICFILES_DIRS = [os.path.join(BASE_DIR ,'urlshortner/static')]
+
+DATABASES ['default'] = dj_database_url.config(conn_max_age=600)
 
 
-MEDIA_ROOT = os.path.join(BASE_DIR ,'media')
-MEDIA_URL = '/media/'
 
 
 DATABASES = {
@@ -139,6 +137,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT =os.path.join(BASE_DIR,'static')
+STATICFILES_DIRS = [os.path.join(BASE_DIR ,'urlshortner/static')]
+STATICFILES_STORAGE = 'whitenoise.storage.CompresseManifestStaticFilesStorage'
+
+MEDIA_ROOT = os.path.join(BASE_DIR ,'media')
+MEDIA_URL = '/media/'
+
+
 django_heroku.settings(locals())
 
 # Default primary key field type
